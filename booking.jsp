@@ -59,7 +59,7 @@
         }
         
     </script>
-    
+    <link rel="icon" href="title_logo.png" type="text/x-icon">
 </head>
 <body>
     <div class="container-xxl bg-white p-0">

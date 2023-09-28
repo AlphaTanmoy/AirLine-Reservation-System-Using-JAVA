@@ -69,7 +69,7 @@
         border: 1px solid black;
     }
     </style>
-    
+    <link rel="icon" href="title_logo.png" type="text/x-icon">
 </head>
 
 <body>

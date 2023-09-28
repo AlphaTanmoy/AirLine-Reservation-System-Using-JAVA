@@ -30,7 +30,7 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="icon" href="title_logo.png" type="text/x-icon">
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 </head>

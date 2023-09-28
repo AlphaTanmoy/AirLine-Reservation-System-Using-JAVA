@@ -65,7 +65,7 @@ public class GeneratePDF_from_PNR extends HttpServlet {
   response.setContentType("application/pdf"); 
   //create a new document
   Document doc = new Document();
-  doc.setMargins(15,15,15,15);
+  doc.setMargins(25,0,25,25);
   
   //create some special styles and font sizes
   Font bfBold28 = new Font(FontFamily.TIMES_ROMAN, 22, Font.BOLD, new BaseColor(254,161,22)); 
@@ -90,12 +90,10 @@ public class GeneratePDF_from_PNR extends HttpServlet {
    
    doc.addHeader("AIRRESERVE Ticket Status", "AIRRESERVE Ticket Status");
    
-   Image hdr = Image.getInstance("C:\\Users\\TANMOY DAS\\Desktop\\Arline Reservation System\\web\\hdr.jpeg");
+   Image hdr = Image.getInstance("C:\\Users\\TANMOY DAS\\Desktop\\Arline Reservation System\\web\\hdr.png");
    doc.add(hdr);
    
    
-   Image img = Image.getInstance("C:\\Users\\TANMOY DAS\\Desktop\\Arline Reservation System\\web\\Logo.jpeg");
-   doc.add(img);
    doc.add( new Paragraph("   AIRRESERVE Ticket Status ---------------------------------", bfBold28));
    //doc.add( Chunk.NEWLINE );
       
@@ -103,7 +101,7 @@ public class GeneratePDF_from_PNR extends HttpServlet {
    PreparedStatement pstmt=conn.prepareStatement(stmt);
    pstmt.setString(1,PNR);
    ResultSet rs2 = pstmt.executeQuery();
-   
+   int flag = 0;
     
    
    while(rs2.next()){
@@ -116,44 +114,98 @@ public class GeneratePDF_from_PNR extends HttpServlet {
     doc.add( new Paragraph("   Coupon:                             " + rs2.getString("coupon").trim(), bf12));
     doc.add( new Paragraph("   Discount:                           " + rs2.getString("discount").trim() + " %", bf12));
     doc.add( new Paragraph("   Actual Fair:                      RS: " + rs2.getString("actual_fair").trim() + " /-", bf12));
+    flag = 1;
    }
    
-   doc.add( Chunk.NEWLINE );
+   if(flag==1){
+    doc.add( Chunk.NEWLINE );
+   
+    PdfPTable table = new PdfPTable(2);
+    float[] columnWidths = {4f, 4f};
+    table.setWidths(columnWidths);
+    PdfPCell cell1 = new PdfPCell(new Paragraph("Payment Status"));
+    PdfPCell cell2 = new PdfPCell(new Paragraph("Successful"));
+   
+    cell1.setPadding(5);
+    cell2.setPadding(5);
+    table.addCell(cell1);
+    table.addCell(cell2);
+   
+    PdfPCell cell3 = new PdfPCell(new Paragraph("Ticket Status"));
+    PdfPCell cell4 = new PdfPCell(new Paragraph("Approved"));
+    table.addCell(cell3); 
+    table.addCell(cell4);
+   
+    cell3.setPadding(5);
+    cell4.setPadding(5);
+   
+    doc.add(table);
+   
+    Image img_a = Image.getInstance("C:\\Users\\TANMOY DAS\\Desktop\\Arline Reservation System\\web\\sts_app.png");
+    doc.add(img_a);
+   
+    
+    doc.add( new Paragraph("\n                          Have A Great Journey Ahead!!\n", bfBold28));
+    doc.add( Chunk.NEWLINE );
+    Image ftr = Image.getInstance("C:\\Users\\TANMOY DAS\\Desktop\\Arline Reservation System\\web\\ftr.png");
+    doc.add(ftr);
+    rs2.absolute(1);
+    rs2.close();
+    conn.close();                                                              
+    doc.close();
+   }
+   
+   if(flag==0){
+       doc.add( Chunk.NEWLINE );
    
    PdfPTable table = new PdfPTable(2);
    float[] columnWidths = {4f, 4f};
    table.setWidths(columnWidths);
-   PdfPCell cell1 = new PdfPCell(new Paragraph("Payment Status"));
-   PdfPCell cell2 = new PdfPCell(new Paragraph("Successful"));
+      
+   PdfPCell cell1 = new PdfPCell(new Paragraph("Booking Status"));
+   PdfPCell cell2 = new PdfPCell(new Paragraph("Not Done Yet"));
+   
+   PdfPCell cell3 = new PdfPCell(new Paragraph("Payment Status"));
+   PdfPCell cell4 = new PdfPCell(new Paragraph("Un-Successful or Did not receive"));
+   
+   PdfPCell cell5 = new PdfPCell(new Paragraph("Ticket Status"));
+   PdfPCell cell6 = new PdfPCell(new Paragraph("No tickets found regaurding provided PNR"));
+   
+   table.addCell(cell1);
+   table.addCell(cell2);
+   table.addCell(cell3); 
+   table.addCell(cell4);
+   table.addCell(cell5);
+   table.addCell(cell6);
    
    cell1.setPadding(5);
    cell2.setPadding(5);
-   table.addCell(cell1);
-   table.addCell(cell2);
-   
-   PdfPCell cell3 = new PdfPCell(new Paragraph("Ticket Status"));
-   PdfPCell cell4 = new PdfPCell(new Paragraph("Approved"));
-   table.addCell(cell3); 
-   table.addCell(cell4);
-   
    cell3.setPadding(5);
    cell4.setPadding(5);
+   cell5.setPadding(5);
+   cell6.setPadding(5);
    
    doc.add(table);
-   
+   doc.add( Chunk.NEWLINE );
+   doc.add( Chunk.NEWLINE );
+   Image img_r = Image.getInstance("C:\\Users\\TANMOY DAS\\Desktop\\Arline Reservation System\\web\\sts_dcl.png");
+   doc.add(img_r);
    
    doc.add( Chunk.NEWLINE );
-   doc.add( new Paragraph("\n                          Have A Great Journey Ahead!!\n", bfBold28));
    doc.add( Chunk.NEWLINE );
-   Image ftr = Image.getInstance("C:\\Users\\TANMOY DAS\\Desktop\\Arline Reservation System\\web\\ftr.jpeg");
+   doc.add( new Paragraph("\nYou are advised to re-check the entered PNR! or If you have not done the booking yet!\nPlease do onece you will love the dscounts and Environment!!\n", bfBold28));
+   doc.add( Chunk.NEWLINE );
+   doc.add( Chunk.NEWLINE );
+   Image ftr = Image.getInstance("C:\\Users\\TANMOY DAS\\Desktop\\Arline Reservation System\\web\\ftr.png");
    doc.add(ftr);
    //rs1.first();
    rs2.absolute(1);
    rs2.close();
   // rs1.close();                                                                
    conn.close();                                                              
-   doc.close(); 
- 
+   doc.close();
+   }
+     
    System.out.println("PDF Generated Successfully");
   }catch(DocumentException e){
    e.printStackTrace();
